@@ -1,0 +1,13 @@
+.docker/
+.logs/
+.env
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+*.test
+
+*.out

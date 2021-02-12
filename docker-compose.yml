@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: sthira_blog
+      POSTGRES_PASSWORD: admin23
+      POSTGRES_EXTENSIONS: uuid-ossp
+    ports:
+      - 5432:5432
+    volumes:
+      - ".docker/postgres:/var/lib/postgresql/data"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_PASSWORD=secret123
+    ports:
+      - "6379:6379"
+    volumes:
+      - ".docker/redis:/bitnami/redis/data"
