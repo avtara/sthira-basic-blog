@@ -33,7 +33,7 @@ func main() {
 	defer config.CloseDatabaseConnection(db)
 
 	r := gin.Default()
-	store, err := redis.NewStore(10, "tcp", "localhost:6379", "secret123", []byte("secret"))
+	store, err := redis.NewStore(10, "tcp", "178.128.25.31:6379", "secret123", []byte("secret"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -70,5 +70,5 @@ func main() {
 		articleRoutes.GET("/:slug", blogController.BlogBySlug)
 	}
 
-	r.Run(":8080")
+	r.Run(":8081")
 }

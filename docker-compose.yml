@@ -1,18 +1,21 @@
 version: '3.8'
 services:
   db:
-    image: postgres
+    container_name: postgres_db
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     restart: always
     environment:
       POSTGRES_DB: sthira_blog
       POSTGRES_PASSWORD: admin23
-      POSTGRES_EXTENSIONS: uuid-ossp
     ports:
       - 5432:5432
     volumes:
-      - ".docker/postgres:/var/lib/postgresql/data"
+      - database_postgres:/var/lib/postgresql/data
 
   adminer:
+    container_name: redis
     image: adminer
     restart: always
     ports:
@@ -26,3 +29,29 @@ services:
       - "6379:6379"
     volumes:
       - ".docker/redis:/bitnami/redis/data"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - 8081:8081
+    restart: unless-stopped
+    env_file:
+        - ./.env
+    environment:
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
+        DB_HOST: ${DB_HOST}
+        DB_PORT: ${DB_PORT}
+        DB_NAME: ${DB_NAME}
+        DB_SSLMODE: ${DB_SSLMODE}
+    depends_on: 
+      - db
+      - redis
+    links:
+      - db
+      - redis
+
+volumes:
+  database_postgres:  
