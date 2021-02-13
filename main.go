@@ -70,5 +70,5 @@ func main() {
 		articleRoutes.GET("/:slug", blogController.BlogBySlug)
 	}
 
-	r.Run(":8081")
+	r.Run(":8080")
 }
