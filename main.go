@@ -20,14 +20,17 @@ import (
 func main() {
 
 	var (
-		db             *gorm.DB                  = config.SetupDatabaseConnection()
-		userRepository repository.UserRepository = repository.NewUserRepository(db)
-		blogRepository repository.BlogRepository = repository.NewBlogRepository(db)
-		jwtService     service.JWTService        = service.NewJWTService()
-		authService    service.AuthService       = service.NewAuthService(userRepository)
-		blogService    service.BlogService       = service.NewBlogService(blogRepository)
-		authController controller.AuthController = controller.NewAuthController(authService, jwtService)
-		blogController controller.BlogController = controller.NewBlogController(blogService)
+		db                  *gorm.DB                       = config.SetupDatabaseConnection()
+		userRepository      repository.UserRepository      = repository.NewUserRepository(db)
+		blogRepository      repository.BlogRepository      = repository.NewBlogRepository(db)
+		contactUsRepository repository.ContactUsRepository = repository.NewContactRepository(db)
+		jwtService          service.JWTService             = service.NewJWTService()
+		authService         service.AuthService            = service.NewAuthService(userRepository)
+		blogService         service.BlogService            = service.NewBlogService(blogRepository)
+		contactUsService    service.ContactUsService       = service.NewContactUsService(contactUsRepository)
+		authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
+		blogController      controller.BlogController      = controller.NewBlogController(blogService)
+		contactUsController controller.ContactUsController = controller.NewContactUsController(contactUsService)
 	)
 
 	defer config.CloseDatabaseConnection(db)
@@ -68,6 +71,12 @@ func main() {
 	{
 
 		articleRoutes.GET("/:slug", blogController.BlogBySlug)
+	}
+
+	contacUsRoutes := r.Group("api/contact")
+	{
+
+		contacUsRoutes.POST("/", contactUsController.ContactUs)
 	}
 
 	r.Run(":8081")
